@@ -4,16 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Autenticación</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- The core Firebase JS SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+<!-- Men -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
 
-<script src="js/init.js"></script>
+<script src="/js/init.js"></script>
   </head>
 <body>
 	<h1>Autenticacion</h1>
@@ -28,7 +27,7 @@
 	</fieldset>
 	<figure><img id="avatar" alt="Avatar"></figure>
 	<button type="button" onclick="terminaSesión()">Terminar Sesión</button>
-	<footer>Copyrigth &copv; 2021 Sosa Manrique Mayte.</footer>
+	<footer>Copyrigth &copy; 2021 Sosa Manrique Mayte.</footer>
 	<script>
 		//@ts-check
 		/**conexión al sistema de autenticación de Firebase. */
@@ -36,15 +35,12 @@
 		const auth = firebase.auth();
 		/** Tipo de autenticacion de usuarios. En este caso con Google. */
 		// @ts-ignore
-		const provider = new firebase.auth.GoogleAuthPtovider();
-		/* Configura el proveedor de Google para que permita seleccionar de una 
-		*lista. */
-		provider.setCustomParameters({ prompt: "select_account"});
-		/* Recibe una función que se invoca cada que hay un cambio en la 
-		*autenticacion y recibe el modelo con las características del usuario. */
+		const provider = new firebase.auth.GoogleAuthProvider();
+		/* Configura el proveedor de Google para que permita seleccionar de una lista. */
+		provider.setCustomParameters({ prompt: "select_account" });
+		/* Recibe una función que se invoca cada que hay un cambio en la autenticacion y recibe el modelo con las características del usuario. */
 		auth.onAuthStateChanged(
-			/** Recibe las características del usuario o null si no ha iniciado 
-			*secion. */
+			/** Recibe las características del usuario o null si no ha iniciado ecion. */
 			usuarioAuth => {
 				if (usuarioAuth && usuarioAuth.email) {
 					// Usuario aceptado.
@@ -59,20 +55,18 @@
 					auth.signInWithRedirect(provider);
 				}
 			},
-			// Funcion que se invoca si hay un error al verificar el usuario. //
+			// Función que se invoca si hay un error al verificar el usuario. //
 			procesaError
 			);
 		/** Temina la sesión. */
 		async function terminaSesión() {
 			try {
 				await auth.singOut();
-			}	catch (e){
+			}	catch (e) {
 				procesaError(e);
 			}
 		}
-		/** Procesa un error. Muestra el objeto en la consola y un cuadro de
-		*alerta con el mensaje.
-		*@param {Error} e descripción del error. */
+		/** Procesa un error. Muestra el objeto en la consola y un cuadro de alerta con el mensaje. @param {Error} e descripción del error. */
 		function procesaError(e) {
 			console.log(e);
 			alert(e.message);
