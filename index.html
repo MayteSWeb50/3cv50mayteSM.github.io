@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Autenticación</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+
+<script src="/js/init.js"></script>
+  </head>
+<body>
+	<h1>Autenticacion</h1>
+	<h1>Sesión</h1>
+	<fieldset>
+		<legend>Email</legend>
+		<output id="email"><progress max="100">Cargando...</progress></output>
+	</fieldset>
+	<fieldset>
+		<legend>Nombre</legend>
+		<output id="nombre"></output>
+	</fieldset>
+	<figure><img id="avatar" alt="Avatar"></figure>
+	<button type="button" onclick="terminaSesión()">Terminar Sesión</button>
+	<footer>Cpýrigth &copv; 2021 Sosa Manrique Mayte.</footer>
+	<script>
+		//@ts-check
+		/**conexión al sistema de autenticación de Firebase. */
+		// @ts-ignore
+		const auth = firebase.auth();
+		/** Tipo de autenticacion de usuarios. En este caso con Google. */
+		// @ts-ignore
+		const provider = new firebase.auth.GoogleAuthPtovider();
+		/* Configura el proveedor de Google para que permita seleccionar de una 
+		*lista. */
+		provider.setCustomParameters({ prompt: "select_account"});
+		/* Recibe una función que se invoca cada que hay un cambio en la 
+		*autenticacion y recibe el modelo con las características del usuario. */
+		auth.onAuthStateChanged(
+			/** Recibe las características del usuario o null si no ha iniciado 
+			*secion. */
+			usuarioAuth => {
+				if (usuarioAuth && usuarioAuth.email) {
+					// Usuario aceptado.
+					// @ts-ignore Muestra el email registrado en Google.
+					email.value = usuarioAuth.email;
+					// @ts.ignore Muestra el nombre registrado en Google.
+					nombre.value = usuarioAuth.displayName;
+					// @ts-ignore Muestra el avatar registrado en Google.
+					avatar.src = usuarioAuth.photoURL;
+				} else {
+					// No ha iniciado sesión. Pide datos para iniciar sesión.
+					auth.signInWithRedirect(provider);
+				}
+			},
+			// Funcion que se invoca si hay un error al verificar el usuario. //
+			procesaError
+			);
+		/** Temina la sesión. */
+		async function terminaSesión() {
+			try {
+				await auth.singOut();
+			}	catch (e){
+				procesaError(e);
+			}
+		}
+		/** Procesa un error. Muestra el objeto en la consola y un cuadro de
+		*alerta con el mensaje.
+		*@param {Error} e descripción del error. */
+		function procesaError(e) {
+			console.log(e);
+			alert(e.message);
+		}
+	</script>
+</body>
+</html>
