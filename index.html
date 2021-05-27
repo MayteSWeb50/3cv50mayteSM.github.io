@@ -61,7 +61,7 @@
 		/** Temina la sesión. */
 		async function terminaSesión() {
 			try {
-				await auth.singOut();
+				await auth.signOut();
 			}	catch (e) {
 				procesaError(e);
 			}
